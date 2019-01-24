@@ -10,7 +10,7 @@ model_path = sys.argv[1]  # models/RRDB_ESRGAN_x4.pth OR models/RRDB_PSNR_x4.pth
 device = torch.device('cuda')  # if you want to run on CPU, change 'cuda' -> cpu
 # device = torch.device('cpu')
 
-test_img_folder = 'LR/*'
+test_img_folder = sys.argv[2] + '/*'
 
 model = arch.RRDB_Net(3, 3, 64, 23, gc=32, upscale=4, norm_type=None, act_type='leakyrelu', \
                         mode='CNA', res_scale=1, upsample_mode='upconv')
@@ -37,4 +37,4 @@ for path in glob.glob(test_img_folder):
     output = model(img_LR).data.squeeze().float().cpu().clamp_(0, 1).numpy()
     output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
     output = (output * 255.0).round()
-    cv2.imwrite('results/{:s}_rlt.png'.format(base), output)
+    cv2.imwrite(sys.argv[3] + 'results/{:s}.png'.format(base), output)
